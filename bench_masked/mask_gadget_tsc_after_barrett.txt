@@ -1,0 +1,70 @@
+Experimental masking gadget benchmark -- DEMO ONLY
+Counter unit: TSC/reference ticks
+
+Mask RNG
+mask RNG init                                   7.80 TSC-ticks/op
+mask RNG next_u64                               4.90 TSC-ticks/op
+mask RNG next_u32                               4.87 TSC-ticks/op
+mask RNG next_bit                               5.48 TSC-ticks/op
+mask RNG mod 12289                              9.76 TSC-ticks/op
+mask RNG mod 18433                              9.76 TSC-ticks/op
+mask RNG mod 226523137                         11.65 TSC-ticks/op
+
+160-bit arithmetic and conversion gadgets
+mrx160_share_rx                                24.25 TSC-ticks/op
+mrx160_open_rx                                  4.90 TSC-ticks/op
+mrx160_copy                                     3.89 TSC-ticks/op
+mrx160_add                                      7.83 TSC-ticks/op
+mrx160_sub                                      7.91 TSC-ticks/op
+mrx160_neg                                     10.71 TSC-ticks/op
+mrx160_refresh                                 26.02 TSC-ticks/op
+mrx160_a2b                                    894.62 TSC-ticks/op
+mrx160_b2a                                    170.50 TSC-ticks/op
+mrx160_mul fast                              1213.89 TSC-ticks/op
+mrx160_mul_wide                              3765.37 TSC-ticks/op
+
+Modulo 12289 gadgets
+mmod32_share mod 12289                         22.88 TSC-ticks/op
+mmod32_open mod 12289                           6.62 TSC-ticks/op
+mmod32_add mod 12289                           12.45 TSC-ticks/op
+mmod32_sub mod 12289                           12.96 TSC-ticks/op
+mmod32_mul mod 12289                           47.99 TSC-ticks/op
+mmod32_refresh mod 12289                       22.88 TSC-ticks/op
+
+Modulo 18433 gadgets
+mmod32_share mod 18433                         23.39 TSC-ticks/op
+mmod32_open mod 18433                           6.84 TSC-ticks/op
+mmod32_add mod 18433                           12.64 TSC-ticks/op
+mmod32_sub mod 18433                           13.61 TSC-ticks/op
+mmod32_mul mod 18433                           48.85 TSC-ticks/op
+mmod32_refresh mod 18433                       23.43 TSC-ticks/op
+
+Modulo 226523137 gadgets
+mmod32_share mod 226523137                     25.37 TSC-ticks/op
+mmod32_open mod 226523137                       7.16 TSC-ticks/op
+mmod32_add mod 226523137                       12.75 TSC-ticks/op
+mmod32_sub mod 226523137                       13.35 TSC-ticks/op
+mmod32_mul mod 226523137                       53.66 TSC-ticks/op
+mmod32_refresh mod 226523137                   25.59 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-512)
+fndsa_masked_key_size logn=9                    4.88 TSC-ticks/op
+fndsa_masked_tmp_size logn=9                    3.91 TSC-ticks/op
+masked key import logn=9                   203261.00 TSC-ticks/op
+masked key validate logn=9                    602.00 TSC-ticks/op
+plain seeded sign logn=9                  1462258.00 TSC-ticks/op
+masked seeded bridge logn=9               1635548.00 TSC-ticks/op
+masked random bridge logn=9               1451680.00 TSC-ticks/op
+masked key clear logn=9                      3569.00 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-1024)
+fndsa_masked_key_size logn=10                   3.87 TSC-ticks/op
+fndsa_masked_tmp_size logn=10                   3.10 TSC-ticks/op
+masked key import logn=10                  315577.00 TSC-ticks/op
+masked key validate logn=10                   903.00 TSC-ticks/op
+plain seeded sign logn=10                 2450742.00 TSC-ticks/op
+masked seeded bridge logn=10              2727447.00 TSC-ticks/op
+masked random bridge logn=10              2729984.00 TSC-ticks/op
+masked key clear logn=10                     7095.00 TSC-ticks/op
+
+benchmark sink: 2312001026101104683

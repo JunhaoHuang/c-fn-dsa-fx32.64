@@ -1,0 +1,43 @@
+# Masked modular arithmetic after Montgomery conversion
+# Saved: 2026-10-31
+# Host: AMD Ryzen 9 9950X3D 16-Core Processor
+# Compiler: Ubuntu clang 18.1.3, -O2; masked modules use -fno-lto
+# Counter: invariant TSC reference ticks, NOT PMU hardware core cycles
+# CPU affinity: logical CPU 2
+# Aggregation: median of three complete final runs
+# Local base commit: 1e6ef5d0fa7c577e5fea3c92e07ea9e2d0edbc2f plus working-tree changes
+# Raccoon reference: masksign/sp23-craccoon cf9433819edca87256893ae6b2359b6677ff7149
+
+Operation                                      TSC ticks/op
+------------------------------------------------------------
+mmod32_share mod 12289                              17.76
+mmod32_open mod 12289                                4.15
+mmod32_add mod 12289                                 4.67
+mmod32_sub mod 12289                                 3.14
+mmod32_mul mod 12289                                41.45
+mmod32_refresh mod 12289                            14.71
+
+mmod32_share mod 18433                              17.97
+mmod32_open mod 18433                                4.86
+mmod32_add mod 18433                                 4.67
+mmod32_sub mod 18433                                 3.12
+mmod32_mul mod 18433                                42.23
+mmod32_refresh mod 18433                            15.39
+
+mmod32_share mod 226523137                          19.69
+mmod32_open mod 226523137                            5.46
+mmod32_add mod 226523137                             4.67
+mmod32_sub mod 226523137                             3.12
+mmod32_mul mod 226523137                            45.41
+mmod32_refresh mod 226523137                        16.98
+
+Comparison with bench_masked/mask_dynamic_backend_tsc.txt (Barrett baseline):
+
+modulus       share       open        add         sub         mul       refresh
+12289         1.375x      1.622x      2.739x      4.169x      1.191x    1.628x
+18433         1.383x      1.428x      2.739x      4.224x      1.210x    1.604x
+226523137     1.365x      1.322x      2.878x      4.122x      1.144x    1.469x
+
+The speedup table is old Barrett ticks divided by new Montgomery ticks.
+Both implementations use the same fixed LFSR demo mask source. These numbers
+measure implementation throughput and do not establish side-channel security.

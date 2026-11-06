@@ -337,7 +337,9 @@ shake_next_u16(shake_context *sc)
 #if FNDSA_LITTLE_ENDIAN
 	uint8_t *d = (uint8_t *)(void *)sc;
 #if FNDSA_UNALIGNED_16
-	unsigned v = *(uint16_t *)(d + sc->dptr);
+	uint16_t tv;
+	memcpy(&tv, d + sc->dptr, sizeof tv);
+	unsigned v = tv;
 #else
 	unsigned v = (unsigned)d[sc->dptr] | ((unsigned)d[sc->dptr + 1] << 8);
 #endif
@@ -376,7 +378,7 @@ shake_next_u64(shake_context *sc)
 	}
 	uint64_t x;
 #if FNDSA_LITTLE_ENDIAN && FNDSA_UNALIGNED_64
-	x = *(uint64_t *)((uint8_t *)(void *)sc + sc->dptr);
+	memcpy(&x, (uint8_t *)(void *)sc + sc->dptr, sizeof x);
 #else
 	size_t j = sc->dptr >> 3;
 	unsigned n = sc->dptr & 7;

@@ -463,21 +463,24 @@ rx_half(rx d, const rx a)
 }
 
 /* d <- a/2^e
-   e MUST be in [1,31].
+   e MUST be in [0,31].
    Output is rounded toward -infinity. */
 static inline void
 rx_div2e(rx d, const rx a, unsigned e)
 {
 #if FNDSA_64
 	uint64_t a0 = (uint64_t)a[0] | ((uint64_t)a[1] << 32);
-	uint64_t d0 = (a0 >> e) | ((uint64_t)a[2] << (64 - e));
+	uint64_t hm = (uint64_t)0 - (uint64_t)(e != 0);
+	uint64_t d0 = (a0 >> e)
+		| (((uint64_t)a[2] << ((64 - e) & 63)) & hm);
 	uint32_t d2 = (uint32_t)(*(int32_t *)&a[2] >> e);
 	d[0] = (uint32_t)d0;
 	d[1] = (uint32_t)(d0 >> 32);
 	d[2] = d2;
 #else
-	uint32_t d0 = (a[0] >> e) | (a[1] << (32 - e));
-	uint32_t d1 = (a[1] >> e) | (a[2] << (32 - e));
+	uint32_t hm = (uint32_t)0 - (uint32_t)(e != 0);
+	uint32_t d0 = (a[0] >> e) | ((a[1] << ((32 - e) & 31)) & hm);
+	uint32_t d1 = (a[1] >> e) | ((a[2] << ((32 - e) & 31)) & hm);
 	uint32_t d2 = (uint32_t)(*(int32_t *)&a[2] >> e);
 	d[0] = d0;
 	d[1] = d1;

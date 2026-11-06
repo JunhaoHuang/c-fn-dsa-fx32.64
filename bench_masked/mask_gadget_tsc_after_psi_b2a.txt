@@ -1,0 +1,79 @@
+# Post-Psi-B2A masking benchmark result
+# Saved: 2026-10-30T13:41:58+08:00
+# Architecture: x86_64
+# CPU: AMD Ryzen 9 9950X3D 16-Core Processor
+# Compiler: Ubuntu clang 18.1.3 (1ubuntu1)
+# Build flags: -W -Wextra -Wundef -Wshadow -O2; mask modules use -fno-lto
+# Command: ./speed_masked -tsc
+# Values are invariant-TSC/reference ticks, not CPU core cycles.
+
+Experimental masking gadget benchmark -- DEMO ONLY
+Counter unit: TSC/reference ticks
+
+Mask RNG
+mask RNG init                                   3.07 TSC-ticks/op
+mask RNG next_u64                               3.87 TSC-ticks/op
+mask RNG next_u32                               3.84 TSC-ticks/op
+mask RNG next_bit                               4.33 TSC-ticks/op
+mask RNG mod 12289                             10.32 TSC-ticks/op
+mask RNG mod 18433                              9.98 TSC-ticks/op
+mask RNG mod 226523137                         11.61 TSC-ticks/op
+
+160-bit arithmetic and conversion gadgets
+mrx160_share_rx                                19.09 TSC-ticks/op
+mrx160_open_rx                                  3.83 TSC-ticks/op
+mrx160_copy                                     3.06 TSC-ticks/op
+mrx160_add                                      6.17 TSC-ticks/op
+mrx160_sub                                      7.76 TSC-ticks/op
+mrx160_neg                                      7.76 TSC-ticks/op
+mrx160_refresh                                 20.55 TSC-ticks/op
+mrx160_a2b                                    672.09 TSC-ticks/op
+mrx160_b2a                                    136.31 TSC-ticks/op
+mrx160_mul fast                               930.95 TSC-ticks/op
+mrx160_mul_wide                              2944.07 TSC-ticks/op
+
+Modulo 12289 gadgets
+mmod32_share mod 12289                         19.87 TSC-ticks/op
+mmod32_open mod 12289                           4.69 TSC-ticks/op
+mmod32_add mod 12289                            9.35 TSC-ticks/op
+mmod32_sub mod 12289                            9.31 TSC-ticks/op
+mmod32_mul mod 12289                           39.82 TSC-ticks/op
+mmod32_refresh mod 12289                       19.57 TSC-ticks/op
+
+Modulo 18433 gadgets
+mmod32_share mod 18433                         19.35 TSC-ticks/op
+mmod32_open mod 18433                           4.64 TSC-ticks/op
+mmod32_add mod 18433                            9.27 TSC-ticks/op
+mmod32_sub mod 18433                            9.27 TSC-ticks/op
+mmod32_mul mod 18433                           39.04 TSC-ticks/op
+mmod32_refresh mod 18433                       19.31 TSC-ticks/op
+
+Modulo 226523137 gadgets
+mmod32_share mod 226523137                     20.64 TSC-ticks/op
+mmod32_open mod 226523137                       4.64 TSC-ticks/op
+mmod32_add mod 226523137                        9.24 TSC-ticks/op
+mmod32_sub mod 226523137                        9.24 TSC-ticks/op
+mmod32_mul mod 226523137                       43.60 TSC-ticks/op
+mmod32_refresh mod 226523137                   20.25 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-512)
+fndsa_masked_key_size logn=9                    3.07 TSC-ticks/op
+fndsa_masked_tmp_size logn=9                    3.07 TSC-ticks/op
+masked key import logn=9                   136482.00 TSC-ticks/op
+masked key validate logn=9                   1677.00 TSC-ticks/op
+plain seeded sign logn=9                  1132190.00 TSC-ticks/op
+masked seeded bridge logn=9               1246656.00 TSC-ticks/op
+masked random bridge logn=9               1274778.00 TSC-ticks/op
+masked key clear logn=9                      3526.00 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-1024)
+fndsa_masked_key_size logn=10                   3.05 TSC-ticks/op
+fndsa_masked_tmp_size logn=10                   3.05 TSC-ticks/op
+masked key import logn=10                  269051.00 TSC-ticks/op
+masked key validate logn=10                  3268.00 TSC-ticks/op
+plain seeded sign logn=10                 2425157.00 TSC-ticks/op
+masked seeded bridge logn=10              2650692.00 TSC-ticks/op
+masked random bridge logn=10              2658561.00 TSC-ticks/op
+masked key clear logn=10                     6966.00 TSC-ticks/op
+
+benchmark sink: 2312001026101104739

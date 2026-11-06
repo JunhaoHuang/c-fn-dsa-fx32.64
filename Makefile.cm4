@@ -21,9 +21,12 @@ LIBS =
 OBJ_COMM = codec.o codec_mrm.o mq.o sha3.o sysrng.o util.o util_mrm.o
 OBJ_COMM_ASM = codec_cm4.o mq_cm4.o sha3_cm4.o
 OBJ_KGEN = kgen.o kgen_fxp.o kgen_gauss.o kgen_mp31.o kgen_ntru.o kgen_poly.o kgen_zint31.o
-OBJ_SIGN = sign.o sign_core.o sign_ext.o sign_mq2.o sign_mrm.o sign_rx.o sign_rx_cm4.o sign_sampler.o sign_xpoly.o
+OBJ_SIGN = sign.o sign_core.o sign_ext.o sign_mq2.o sign_mrm.o sign_rx.o sign_rx_cm4.o sign_sampler.o sign_xpoly.o mask160.o mask_mq.o mask_sampler.o mask_xpoly.o mask_tree.o sign_masked.o
 OBJ_SIGN_ASM = sign_mq2_cm4.o sign_sampler_cm4.o
 OBJ_VRFY = vrfy.o vrfy_mrm.o
+sign_masked.o: sign_masked.c fndsa.h fndsa_masked.h mask160.h mask_mq.h mask_tree.h mask_xpoly.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o sign_masked.o sign_masked.c
+
 OBJ_ASM = $(OBJ_COMM_ASM) $(OBJ_SIGN_ASM)
 OBJ = $(OBJ_COMM) $(OBJ_KGEN) $(OBJ_SIGN) $(OBJ_VRFY) $(OBJ_ASM)
 TESTOBJ = test_fndsa.o
@@ -121,6 +124,21 @@ sign_sampler_cm4.o: sign_sampler_cm4.s
 
 sign_xpoly.o: sign_xpoly.c fndsa.h sign_inner.h inner.h
 	$(CC) $(CFLAGS) -c -o sign_xpoly.o sign_xpoly.c
+
+mask160.o: mask160.c mask160.h mask_mont32.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask160.o mask160.c
+
+mask_mq.o: mask_mq.c mask_mq.h mask160.h mask_mont32.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_mq.o mask_mq.c
+
+mask_sampler.o: mask_sampler.c mask_sampler.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_sampler.o mask_sampler.c
+
+mask_xpoly.o: mask_xpoly.c mask_xpoly.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_xpoly.o mask_xpoly.c
+
+mask_tree.o: mask_tree.c mask_tree.h mask_xpoly.h mask_sampler.h mask160.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_tree.o mask_tree.c
 
 vrfy.o: vrfy.c fndsa.h inner.h
 	$(CC) $(CFLAGS) -c -o vrfy.o vrfy.c

@@ -1,0 +1,37 @@
+Experimental masked Falcon modular-polynomial benchmark -- DEMO ONLY
+Date: 2026-10-31
+Command: ./speed_masked -tsc
+Counter: TSC/reference ticks (not hardware core cycles)
+Implementation: explicit share-major passes with q/q' inline Montgomery REDC
+
+FN-DSA-512 (logn=9)
+operation                         plain       masked
+NTT q                            2451.00     31691.00
+inverse NTT q                    2580.00     40850.00
+NTT q-prime                      2451.00     42183.00
+inverse NTT q-prime              2537.00     41065.00
+pointwise q                       344.00     20898.00
+pointwise q-prime                 387.00     21242.00
+Gram q                            473.00     50568.00
+Gram q-prime                      473.00     51213.00
+CRT / CRT+masked center           602.00    444405.00
+masked center, one coefficient      n/a         851.40
+
+FN-DSA-1024 (logn=10)
+operation                         plain       masked
+NTT q                            5117.00     68026.00
+inverse NTT q                    5418.00     87634.00
+NTT q-prime                      5117.00     69961.00
+inverse NTT q-prime              5418.00     89784.00
+pointwise q                       688.00     42312.00
+pointwise q-prime                 688.00     42828.00
+Gram q                            860.00    102125.00
+Gram q-prime                      860.00    101953.00
+CRT / CRT+masked center          1118.00    890358.00
+masked center, one coefficient      n/a         864.30
+
+The masked column includes transform-boundary refresh. CRT includes the two
+independent sharewise CRT maps followed by whole-secret A2B, two masked
+comparisons/selects, B2A and refresh for every coefficient. Values are medians
+emitted by speed_masked and are meaningful only for same-host relative
+comparison; they are not hardware core-cycle claims.

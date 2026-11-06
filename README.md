@@ -52,16 +52,33 @@ On Windows with MSVC, start a MSVC command-line and use:
 `nmake -f Makefile.win32`
 
 This code is fundamentally a library, but the default compilation also
-produces two command-line utilities: `test_fndsa` for unit tests of
-correctness, and `speed_fndsa` for benchmark. By default, `speed_fndsa`
-will try to read the CPU cycle counter registers, which are normally
-forbidden to access from basic userland, and this will crash; see
-[cycle-counter](https://github.com/pornin/cycle-counter) for ways to fix
-that on some systems. Alternatively, launch `speed_fndsa -tsc` to make
-it use the generic time stamp counter, which in genral has a fixed
+produces four command-line utilities: `test_fndsa` for the original
+correctness tests, `test_masked` for the experimental masking scaffold,
+and `speed_fndsa` plus `speed_masked` for benchmarks.
+By default, both speed programs try to read hardware CPU-cycle counters, which
+are normally forbidden to access from basic userland; see
+[cycle-counter](https://github.com/pornin/cycle-counter) for ways to enable
+that on some systems. Alternatively, launch either program with `-tsc` to use
+the generic time stamp counter, which in general has a fixed
 frequency that does not track CPU frequency scaling. TSC benchmarks are
 not very reliable, especially if you did not disable this dynamic
 frequency scaling ("TurboBoost" in Intel terminology).
+
+The experimental two-share 160-bit masking backend has a separate API. Its v2
+FN-DSA-512/1024 path performs masked NTT/CRT, dynamic sampling, final-vector
+construction and aggregate acceptance without reconstructing an ordinary
+private key. It remains **DEMO ONLY** because masks come from a fixed LFSR and
+sampling/retry control flow is observable. Its scope and precise security
+limitations are documented in [MASKING.md](MASKING.md).
+
+## Lean range and precision proofs
+
+The `lean/` project machine-checks the Q32.64 rounding rule, the 160/192-bit
+no-overflow conditions, two-share ring reconstruction, Falcon-512 magnitude
+budgets, deterministic error-composition lemmas, masked NTT/CRT widths, signed
+modulus switching, final norm/encoding bounds, and v2 arena sizes. The exact
+boundary between proved results and still-empirical end-to-end precision claims
+is documented in [the Chinese proof audit](lean/ANALYSIS.zh-CN.md).
 
 # Benchmarks
 

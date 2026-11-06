@@ -1,0 +1,39 @@
+operation,baseline_median_tsc_ticks,signed_median_tsc_ticks
+mmod32_share mod 12289,18.23,14.36
+mmod32_open mod 12289,4.02,4.00
+mmod32_add mod 12289,3.18,3.18
+mmod32_sub mod 12289,3.16,3.18
+mmod32_mul mod 12289,40.68,33.71
+mmod32_refresh mod 12289,14.36,10.45
+mmod32_share mod 18433,21.84,16.51
+mmod32_open mod 18433,4.77,4.75
+mmod32_add mod 18433,3.16,3.16
+mmod32_sub mod 18433,3.14,3.18
+mmod32_mul mod 18433,41.71,34.31
+mmod32_refresh mod 18433,14.75,11.09
+mmod32_share mod 226523137,21.76,16.73
+mmod32_open mod 226523137,5.50,5.55
+mmod32_add mod 226523137,3.16,3.18
+mmod32_sub mod 226523137,3.16,3.18
+mmod32_mul mod 226523137,44.72,37.24
+mmod32_refresh mod 226523137,16.51,12.47
+plain NTT q logn=9,2494.00,2494.00
+plain iNTT q logn=9,2623.00,2623.00
+plain NTT q-prime logn=9,2494.00,2494.00
+plain iNTT q-prime logn=9,2623.00,2623.00
+masked NTT q logn=9,32551.00,23564.00
+masked iNTT q logn=9,41925.00,29541.00
+masked NTT q-prime logn=9,32723.00,23951.00
+masked iNTT q-prime logn=9,42054.00,30229.00
+masked pointwise q logn=9,21672.00,17888.00
+masked pointwise q-prime logn=9,21887.00,18275.00
+plain NTT q logn=10,5289.00,5289.00
+plain iNTT q logn=10,5590.00,5633.00
+plain NTT q-prime logn=10,5246.00,5289.00
+plain iNTT q-prime logn=10,5590.00,5633.00
+masked NTT q logn=10,70391.00,49923.00
+masked iNTT q logn=10,90816.00,63253.00
+masked NTT q-prime logn=10,71079.00,50740.00
+masked iNTT q-prime logn=10,91117.00,64844.00
+masked pointwise q logn=10,43430.00,35991.00
+masked pointwise q-prime logn=10,44032.00,36679.00

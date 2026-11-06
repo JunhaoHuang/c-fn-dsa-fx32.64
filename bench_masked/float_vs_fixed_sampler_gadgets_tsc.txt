@@ -1,0 +1,50 @@
+masked_FALCON floating gadgets vs masked Q32.64 sampler gadgets
+Date: 2026-10-30
+Host: AMD Ryzen 9 9950X3D 16-Core Processor
+Compiler: Ubuntu clang 18.1.3, -O2 -fno-lto -std=c99
+CPU affinity: logical CPU 2
+Counter: invariant TSC reference ticks; NOT hardware core cycles
+masked_FALCON commit: 4c103fb774adfb41edc406d8d52283b9b74418c9
+Masking order: first order / two shares on both sides
+Measurement: median of 101 samples after 20 warm-ups;
+             SamplerZ uses 31 samples after 5 warm-ups.
+Aggregation: median across three complete final runs.
+
+Inputs:
+  floor: 5.5
+  inverse: 5.0
+  ApproxExp/expm and BerExp: x=0.5, ccs=0.5
+  BerExp uniform word: 0x3141592653589793 (accept decisions validated equal)
+  SamplerZ: mu=0.5, sigma=1.5, fixed isigma=floor((2/3)*2^64)
+
+operation                            float ticks   fixed ticks  float/fixed
+----------------------------------------------------------------------------
+floor                                  17591.30       1196.69       14.70x
+inverse                              1423042.00      30710.60       46.36x
+ApproxExp / expm_p63                  468227.00      13235.40       35.36x
+BerExp                                558484.00      19066.20       29.29x
+SamplerZ, precomputed isigma         3660633.00      26660.00      137.25x
+SamplerZ, inverse+sampling pipeline  3660633.00      57534.00       63.63x
+
+Three-run ratio ranges:
+  floor:                         14.04x ..  15.56x
+  inverse:                       46.23x ..  46.39x
+  ApproxExp / expm_p63:          35.18x ..  35.47x
+  BerExp:                        29.28x ..  29.45x
+  SamplerZ, precomputed isigma: 136.87x .. 137.76x
+  SamplerZ, full pipeline:       62.07x ..  63.88x
+
+Interpretation notes:
+- masked_FALCON SamplerZ accepts sigma and computes its masked inverse inside.
+  mrx160_sampler_z accepts isigma, matching the fixed-point FN-DSA sampler API.
+  Therefore 63.63x (fixed inverse + SamplerZ) is the like-interface result;
+  137.25x isolates sampling when isigma is already available.
+- The fixed BerExp performs the legacy lazy byte comparison; the floating
+  implementation accepts a pre-masked full 64-bit uniform word. Both used the
+  same public word for this measurement, and the accept decisions matched.
+- Representations, random generators, and circuits differ. These figures
+  compare the measured implementations, not equally optimized abstract models.
+- Both RNGs are demo-only. The floating reference uses rand()/rand64(); the
+  fixed implementation uses its deterministic LFSR for masks and a separate
+  deterministic byte source for signature sampling.
+- masked_FALCON retains the previously documented UB/sanitizer limitations.

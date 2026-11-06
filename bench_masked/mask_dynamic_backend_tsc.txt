@@ -1,0 +1,95 @@
+# Saved 2026-10-31 after word-sliced SNI A2B/B2A conversion repair.
+# Conservative 192-bit fallback for every unproved call site.
+# TSC/reference ticks only; not hardware core cycles.
+Experimental masking gadget benchmark -- DEMO ONLY
+Counter unit: TSC/reference ticks
+
+Mask RNG
+mask RNG init                                   3.89 TSC-ticks/op
+mask RNG next_u64                               4.92 TSC-ticks/op
+mask RNG next_u32                               4.87 TSC-ticks/op
+mask RNG next_bit                               5.30 TSC-ticks/op
+mask RNG mod 12289                              9.76 TSC-ticks/op
+mask RNG mod 18433                              9.76 TSC-ticks/op
+mask RNG mod 226523137                         11.87 TSC-ticks/op
+
+160-bit arithmetic and conversion gadgets
+mrx160_share_rx                                23.99 TSC-ticks/op
+mrx160_open_rx                                  4.90 TSC-ticks/op
+mrx160_copy                                     3.90 TSC-ticks/op
+mrx160_add                                      7.83 TSC-ticks/op
+mrx160_sub                                      9.74 TSC-ticks/op
+mrx160_neg                                      9.74 TSC-ticks/op
+mrx160_refresh                                 25.97 TSC-ticks/op
+mrx160_a2b                                   1047.27 TSC-ticks/op
+mrx160_b2a                                    172.22 TSC-ticks/op
+mrx160_mul fast                              1376.43 TSC-ticks/op
+mrx160_mul_wide                              4321.50 TSC-ticks/op
+mrx160_floor                                 1294.73 TSC-ticks/op
+mrx160_inv_spec                             42862.40 TSC-ticks/op
+mrx160_div_spec                             26909.40 TSC-ticks/op
+mrx160_sqrt_spec                            50668.33 TSC-ticks/op
+mrx160_mul_u64_hi                            1204.00 TSC-ticks/op
+mrx160_expm_p63                             18507.20 TSC-ticks/op
+mrx160_BerExp accept path                   27193.20 TSC-ticks/op
+mrx160_BerExp reject path                   27029.80 TSC-ticks/op
+mrx160_SamplerZ logn=9                      38227.00 TSC-ticks/op
+mrx160_SamplerZ logn=10                     38184.00 TSC-ticks/op
+
+Modulo 12289 gadgets
+mmod32_share mod 12289                         24.42 TSC-ticks/op
+mmod32_open mod 12289                           6.73 TSC-ticks/op
+mmod32_add mod 12289                           12.79 TSC-ticks/op
+mmod32_sub mod 12289                           13.09 TSC-ticks/op
+mmod32_mul mod 12289                           49.36 TSC-ticks/op
+mmod32_refresh mod 12289                       23.95 TSC-ticks/op
+
+Modulo 18433 gadgets
+mmod32_share mod 18433                         24.85 TSC-ticks/op
+mmod32_open mod 18433                           6.94 TSC-ticks/op
+mmod32_add mod 18433                           12.79 TSC-ticks/op
+mmod32_sub mod 18433                           13.18 TSC-ticks/op
+mmod32_mul mod 18433                           51.08 TSC-ticks/op
+mmod32_refresh mod 18433                       24.68 TSC-ticks/op
+
+Modulo 226523137 gadgets
+mmod32_share mod 226523137                     26.88 TSC-ticks/op
+mmod32_open mod 226523137                       7.22 TSC-ticks/op
+mmod32_add mod 226523137                       13.44 TSC-ticks/op
+mmod32_sub mod 226523137                       12.86 TSC-ticks/op
+mmod32_mul mod 226523137                       51.94 TSC-ticks/op
+mmod32_refresh mod 226523137                   24.94 TSC-ticks/op
+
+Masked dynamic backend (FN-DSA-512)
+masked FFT logn=9                         7633188.00 TSC-ticks/op
+masked LDL logn=9                         7116457.00 TSC-ticks/op
+masked ffSampling left logn=9           101230342.00 TSC-ticks/op
+masked ffSampling right logn=9          106889400.00 TSC-ticks/op
+
+Masked dynamic backend (FN-DSA-1024)
+masked FFT logn=10                       17155581.00 TSC-ticks/op
+masked LDL logn=10                       14279870.00 TSC-ticks/op
+masked ffSampling left logn=10          218409384.00 TSC-ticks/op
+masked ffSampling right logn=10         230297293.00 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-512)
+fndsa_masked_key_size logn=9                    3.05 TSC-ticks/op
+fndsa_masked_tmp_size logn=9                    3.05 TSC-ticks/op
+masked key import logn=9                   157337.00 TSC-ticks/op
+masked key validate logn=9                    473.00 TSC-ticks/op
+plain seeded sign logn=9                  1123977.00 TSC-ticks/op
+masked seeded bridge logn=9               1259857.00 TSC-ticks/op
+masked random bridge logn=9               1280927.00 TSC-ticks/op
+masked key clear logn=9                      3483.00 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-1024)
+fndsa_masked_key_size logn=10                   3.03 TSC-ticks/op
+fndsa_masked_tmp_size logn=10                   3.03 TSC-ticks/op
+masked key import logn=10                  312438.00 TSC-ticks/op
+masked key validate logn=10                   860.00 TSC-ticks/op
+plain seeded sign logn=10                 2380996.00 TSC-ticks/op
+masked seeded bridge logn=10              2655680.00 TSC-ticks/op
+masked random bridge logn=10              2660238.00 TSC-ticks/op
+masked key clear logn=10                     6923.00 TSC-ticks/op
+
+benchmark sink: 2312001026152324672

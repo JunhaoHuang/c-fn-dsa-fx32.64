@@ -1,0 +1,107 @@
+Three-implementation masked gadget reassessment
+Date: 2026-10-31
+Host: AMD Ryzen 9 9950X3D 16-Core Processor
+Compiler: Ubuntu clang 18.1.3, -O2 -fno-lto -std=c99
+CPU affinity: logical CPU 2
+Counter: invariant TSC reference ticks; NOT PMU hardware core cycles
+perf_event_paranoid: 4
+Measurement: each complete run uses the per-operation median of 101 samples
+             after 20 warm-ups; table values are medians over five runs.
+Masking order: first order / two shares for all three implementations
+
+Implementations:
+  fixed: current c-fn-dsa-fx32.64 working tree (Q32.64, 160-bit shares)
+  Chen-Chen: kengyuchen/masked-falcon-power-analysis
+             commit 24be736ad5544f02f2c11f217de708740d988c8e
+  Burak: burak231708/masked_FALCON
+         commit 4c103fb774adfb41edc406d8d52283b9b74418c9
+
+Strict three-way comparison (TSC reference ticks per operation)
+
+operation                            fixed       Chen-Chen          Burak
+------------------------------------------------------------------------
+add                                  7.80          6611.25       25234.55
+multiply, 160-bit fast            1681.30          3362.60       15781.00
+multiply, 192-bit fallback        4714.23          3362.60       15781.00
+
+Ratios derived from the medians:
+  Chen / fixed add:                         847.60x
+  Burak / fixed add:                       3235.20x
+  Burak / Chen add:                           3.82x
+  Chen / fixed 160-bit multiply:              2.00x
+  Burak / fixed 160-bit multiply:             9.39x
+  Chen / fixed 192-bit multiply:              0.71x
+  fixed 192-bit multiply / Chen:               1.40x
+  Burak / fixed 192-bit multiply:             3.35x
+  Burak / Chen multiply:                       4.69x
+
+Five complete runs
+
+run  fixed-add  Chen-add  Burak-add  fixed-mul160  fixed-mul192  Chen-mul  Burak-mul
+-----------------------------------------------------------------------------------
+1         7.80   6570.40   25234.55       1701.51       4830.33   3362.60   15789.60
+2         7.87   6611.25   25387.20       1722.15       4966.50   3369.05   15781.00
+3         7.80   6613.40   25393.65       1681.30       4714.23   3366.90   15793.90
+4         7.80   6641.35   23232.90       1391.91       3738.13   2653.10   12478.60
+5         6.73   5230.95   20048.75       1320.96       3839.90   2663.85   12500.10
+
+Burak floating-point versus current fixed-point extended gadgets
+(median over five complete runs; Chen-Chen has no matching standalone APIs)
+
+operation                              Burak-float       fixed    float/fixed
+----------------------------------------------------------------------------
+floor                                     14073.90     1083.17          12.99x
+inverse                                 1422139.00    37453.00          37.97x
+ApproxExp / expm_p63                     470076.00    17733.20          26.51x
+BerExp                                   560634.00    24570.20          22.82x
+SamplerZ, precomputed fixed isigma      3667900.00    34271.00         107.02x
+SamplerZ, fixed inverse + sampling      3667900.00    71595.00          51.23x
+
+Representation support operations in the extended benchmark
+(widths differ, so these are diagnostic rather than direct comparisons)
+
+operation                                Burak-float       fixed
+---------------------------------------------------------------
+create sharing (64-bit B / 160-bit A)          42.53       21.07
+refresh (64-bit B / 160-bit A)                 46.44       22.70
+A2B (16-bit exponent / 160-bit value)         1510.16      875.05
+B2A (16-bit exponent / 160-bit value)           91.16      143.19
+
+One complete current-backend bottleneck run
+
+primitive                         TSC reference ticks
+-----------------------------------------------------
+mrx160_a2b                                      881.72
+mrx160_b2a                                      138.25
+mrx160_mul fast                                1320.53
+mrx160_mul_wide                                3775.40
+mrx160_div_spec                               24303.60
+mrx160_inv_spec                               37031.60
+mrx160_sqrt_spec                              47156.67
+mrx160_expm_p63                               17492.40
+mrx160_BerExp                                 about 25300
+mrx160_SamplerZ                              35260.00
+mmod32_mul q=12289                               41.62
+mmod32_mul q'=18433                              42.48
+mmod32_mul M=226523137                           45.75
+
+dynamic backend                    FN-DSA-512       FN-DSA-1024
+----------------------------------------------------------------
+masked FFT                          8652632.00       19168583.00
+masked LDL                          8300763.00       16613222.00
+masked ffSampling left            117455747.00      252966764.00
+masked ffSampling right           124101827.00      266204615.00
+
+Notes:
+  * Values are TSC reference ticks, not hardware core cycles.
+  * The benchmark validates reconstructed 5+3=8 and 5*3=15 before timing.
+  * Different representations perform different internal work. In particular,
+    fixed addition is linear while floating addition aligns a secret exponent.
+  * The fixed fast multiplier requires a proved signed-160-bit product range.
+    The 192-bit path is the conservative result without that proof.
+  * Random generation is included, but all three use demo/test randomness.
+  * The current fixed ring multiplication includes the recent random-first
+    first-order repair; the older saved report predates that final cost.
+  * Historical note: at capture time the public API still used the
+    compatibility bridge. The later v2 integrated signer is measured in
+    integrated_signing_summary.md and mask_integrated_signing_tsc.txt.

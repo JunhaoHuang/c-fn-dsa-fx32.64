@@ -1,0 +1,62 @@
+masked_FALCON float vs masked Q32.64 benchmark
+Date: 2026-10-30
+Host: AMD Ryzen 9 9950X3D 16-Core Processor
+Compiler: Ubuntu clang 18.1.3, -O2 -fno-lto -std=c99
+CPU affinity: logical CPU 2
+Counter: invariant TSC reference ticks; these are NOT hardware core cycles
+masked_FALCON commit: 4c103fb774adfb41edc406d8d52283b9b74418c9
+c-fn-dsa-fx32.64 base commit: 1e6ef5d0fa7c577e5fea3c92e07ea9e2d0edbc2f
+Masking order: first order / two shares on both sides
+Samples: each run reports the median of 101 samples after 20 warm-ups;
+         SamplerZ uses 31 samples after 5 warm-ups.
+
+The values below are medians across three complete pinned-CPU runs.
+
+operation                                      TSC ticks/op
+------------------------------------------------------------
+float MaskB (64-bit Boolean)                         53.47
+fixed share (160-bit arithmetic)                     24.08
+float refresh (64-bit Boolean)                       58.44
+fixed refresh (160-bit arithmetic)                   25.80
+float A2B (16-bit exponent)                        1894.58
+fixed A2B (160-bit value)                           926.22
+float B2A (16-bit exponent)                         113.73
+fixed B2A (160-bit value)                           174.15
+
+float add (IEEE-754)                              25206.60
+fixed add (Q32.64)                                    7.85
+float multiply (IEEE-754)                         15755.20
+fixed multiply (160-bit fast)                      1198.84
+fixed multiply (192-bit fallback)                  3844.20
+
+float floor                                       17673.00
+float inverse                                   1797142.00
+float ApproxExp                                  592755.00
+float BerExp                                     706963.00
+float SamplerZ                                  4050987.00
+
+Median per-run direct-operation ratios (float time / fixed time):
+  add / fixed add:                         3214.50x
+  float multiply / fixed 160-bit fast:       13.14x
+  float multiply / fixed 192-bit fallback:    4.10x
+
+Three-run ratio ranges:
+  add:                         3209.04x .. 3225.31x
+  multiply / fast:              13.00x ..   13.25x
+  multiply / fallback:           4.06x ..    4.12x
+
+Important validity notes:
+- The floating B2A is only a 16-bit exponent conversion; the fixed B2A
+  converts the complete 160-bit value. It is not a same-width comparison.
+- masked_FALCON fails its GCC 13 CMake build under its own -Werror flags at
+  gadgets.c:573-574. Clang -O2 was therefore used for both sides.
+- UBSan aborts masked_FALCON at gadgets.c:161 because SecAdd shifts a uint64_t
+  by 64. The timing above records the tested Clang build, not a UB-free claim.
+- With AddressSanitizer enabled, the reference masked floating-point 5 * 3
+  validation reconstructs the wrong result, even though the ordinary -O2 build
+  passes that test. This sanitizer-sensitive result further limits confidence.
+- Both random generators are demo-only and non-cryptographic. Their costs are
+  included in operations that consume fresh masks.
+- The current fixed-point repository has no masked floor, inverse/division,
+  ApproxExp/BerExp, or SamplerZ peer. The corresponding floating figures are
+  absolute baselines only and cannot be used to claim end-to-end speedup.

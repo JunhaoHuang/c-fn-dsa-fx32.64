@@ -124,6 +124,13 @@ fndsa_gaussian0_helper(uint64_t lo, uint32_t hi)
 }
 #endif
 
+/* Internal bridge for the standalone masked sampler layer. */
+int32_t
+fndsa_masked_gaussian0_helper(uint64_t lo, uint32_t hi)
+{
+	return fndsa_gaussian0_helper(lo, hi);
+}
+
 #define GAUSSIAN(ss, z0, b)   do { \
 		uint64_t lo = prng_next_u64(&ss->pc); \
 		uint32_t hi = prng_next_u16(&ss->pc); \

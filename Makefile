@@ -53,22 +53,30 @@ LIBS =
 
 OBJ_COMM = codec.o codec_mrm.o mq.o sha3.o sysrng.o util.o util_mrm.o
 OBJ_KGEN = kgen.o kgen_fxp.o kgen_gauss.o kgen_mp31.o kgen_ntru.o kgen_poly.o kgen_zint31.o
-OBJ_SIGN = sign.o sign_core.o sign_ext.o sign_mq2.o sign_mrm.o sign_rx.o sign_sampler.o sign_xpoly.o
+OBJ_SIGN = sign.o sign_core.o sign_ext.o sign_mq2.o sign_mrm.o sign_rx.o sign_sampler.o sign_xpoly.o mask160.o mask_mq.o mask_sampler.o mask_xpoly.o mask_tree.o sign_masked.o
 OBJ_VRFY = vrfy.o vrfy_mrm.o
 OBJ = $(OBJ_COMM) $(OBJ_KGEN) $(OBJ_SIGN) $(OBJ_VRFY)
+TESTMASKLINKOBJ = $(filter-out sign_masked.o mask_xpoly.o mask160.o,$(OBJ)) sign_masked_test.o mask_xpoly_test.o mask160_test.o
 TESTOBJ = test_fndsa.o
+TESTMASKOBJ = test_masked.o
 SPEEDOBJ = speed_fndsa.o
+SPEEDMASKOBJ = speed_masked.o
 
-all: test_fndsa speed_fndsa
+all: test_fndsa test_masked speed_fndsa speed_masked
 
 clean:
-	-rm -f $(OBJ) $(TESTOBJ) $(SPEEDOBJ) test_fndsa speed_fndsa
+	-rm -f $(OBJ) $(TESTOBJ) $(TESTMASKOBJ) $(SPEEDOBJ) $(SPEEDMASKOBJ) sign_masked_test.o mask_xpoly_test.o mask160_test.o test_fndsa test_masked speed_fndsa speed_masked
 
 test_fndsa: $(OBJ) $(TESTOBJ)
 	$(LD) $(LDFLAGS) -o test_fndsa $(OBJ) $(TESTOBJ) $(LIBS)
+test_masked: $(TESTMASKLINKOBJ) $(TESTMASKOBJ)
+	$(LD) $(LDFLAGS) -o test_masked $(TESTMASKLINKOBJ) $(TESTMASKOBJ) $(LIBS)
 
 speed_fndsa: $(OBJ) $(SPEEDOBJ)
 	$(LD) $(LDFLAGS) -o speed_fndsa $(OBJ) $(SPEEDOBJ) $(LIBS)
+
+speed_masked: $(OBJ) $(SPEEDMASKOBJ)
+	$(LD) $(LDFLAGS) -o speed_masked $(OBJ) $(SPEEDMASKOBJ) $(LIBS)
 
 # -----------------------------------------------------------------------
 
@@ -138,6 +146,31 @@ sign_sampler.o: sign_sampler.c fndsa.h sign_inner.h inner.h
 sign_xpoly.o: sign_xpoly.c fndsa.h sign_inner.h inner.h
 	$(CC) $(CFLAGS) -c -o sign_xpoly.o sign_xpoly.c
 
+mask160.o: mask160.c mask160.h mask_mont32.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask160.o mask160.c
+mask160_test.o: mask160.c mask160.h mask_mont32.h
+	$(CC) $(CFLAGS) -DFNDSA_MASK_RANGE_CHECKS=1 -fno-lto -c -o mask160_test.o mask160.c
+
+mask_mq.o: mask_mq.c mask_mq.h mask160.h mask_mont32.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_mq.o mask_mq.c
+
+mask_sampler.o: mask_sampler.c mask_sampler.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_sampler.o mask_sampler.c
+
+mask_xpoly.o: mask_xpoly.c mask_xpoly.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_xpoly.o mask_xpoly.c
+mask_xpoly_test.o: mask_xpoly.c mask_xpoly.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -DFNDSA_MASK_RANGE_CHECKS=1 -fno-lto -c -o mask_xpoly_test.o mask_xpoly.c
+
+mask_tree.o: mask_tree.c mask_tree.h mask_xpoly.h mask_sampler.h mask160.h
+	$(CC) $(CFLAGS) -fno-lto -c -o mask_tree.o mask_tree.c
+
+sign_masked.o: sign_masked.c fndsa.h fndsa_masked.h mask160.h mask_mq.h mask_tree.h mask_xpoly.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -fno-lto -c -o sign_masked.o sign_masked.c
+sign_masked_test.o: sign_masked.c fndsa.h fndsa_masked.h mask160.h mask_mq.h mask_tree.h mask_xpoly.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) -DFNDSA_MASK_TEST_HOOKS=1 -fno-lto -c -o sign_masked_test.o sign_masked.c
+
+
 vrfy.o: vrfy.c fndsa.h inner.h
 	$(CC) $(CFLAGS) -c -o vrfy.o vrfy.c
 
@@ -147,5 +180,10 @@ vrfy_mrm.o: vrfy_mrm.c fndsa.h inner.h
 test_fndsa.o: test_fndsa.c fndsa.h inner.h kgen_inner.h sign_inner.h
 	$(CC) $(CFLAGS) -c -o test_fndsa.o test_fndsa.c
 
+test_masked.o: test_masked.c fndsa.h fndsa_masked.h mask160.h mask_mont32.h mask_mq.h mask_sampler.h mask_xpoly.h mask_tree.h sign_inner.h
+	$(CC) $(CFLAGS) -DFNDSA_MASK_TEST_HOOKS=1 -DFNDSA_MASK_RANGE_CHECKS=1 -c -o test_masked.o test_masked.c
 speed_fndsa.o: speed_fndsa.c fndsa.h inner.h
 	$(CC) $(CFLAGS) -c -o speed_fndsa.o speed_fndsa.c
+
+speed_masked.o: speed_masked.c fndsa.h fndsa_masked.h mask160.h mask_mq.h mask_sampler.h mask_xpoly.h mask_tree.h sign_inner.h
+	$(CC) $(CFLAGS) -c -o speed_masked.o speed_masked.c

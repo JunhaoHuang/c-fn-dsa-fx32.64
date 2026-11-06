@@ -14,9 +14,27 @@ LIBS =
 
 OBJ_COMM = codec.obj codec_mrm.obj mq.obj sha3.obj sysrng.obj util.obj util_mrm.obj
 OBJ_KGEN = kgen.obj kgen_fxp.obj kgen_gauss.obj kgen_mp31.obj kgen_ntru.obj kgen_poly.obj kgen_zint31.obj
-OBJ_SIGN = sign.obj sign_core.obj sign_ext.obj sign_mq2.obj sign_mrm.obj sign_rx.obj sign_sampler.obj sign_xpoly.obj
+OBJ_SIGN = sign.obj sign_core.obj sign_ext.obj sign_mq2.obj sign_mrm.obj sign_rx.obj sign_sampler.obj sign_xpoly.obj mask160.obj mask_mq.obj mask_sampler.obj mask_xpoly.obj mask_tree.obj sign_masked.obj
 OBJ_VRFY = vrfy.obj vrfy_mrm.obj
 OBJ = $(OBJ_COMM) $(OBJ_KGEN) $(OBJ_SIGN) $(OBJ_VRFY)
+mask160.obj: mask160.c mask160.h mask_mont32.h
+	$(CC) $(CFLAGS) /c /Fo:mask160.obj mask160.c
+
+mask_mq.obj: mask_mq.c mask_mq.h mask160.h mask_mont32.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) /c /Fo:mask_mq.obj mask_mq.c
+
+mask_sampler.obj: mask_sampler.c mask_sampler.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) /c /Fo:mask_sampler.obj mask_sampler.c
+
+mask_xpoly.obj: mask_xpoly.c mask_xpoly.h mask160.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) /c /Fo:mask_xpoly.obj mask_xpoly.c
+
+mask_tree.obj: mask_tree.c mask_tree.h mask_xpoly.h mask_sampler.h mask160.h
+	$(CC) $(CFLAGS) /c /Fo:mask_tree.obj mask_tree.c
+
+sign_masked.obj: sign_masked.c fndsa.h fndsa_masked.h mask160.h mask_mq.h mask_tree.h mask_xpoly.h sign_inner.h inner.h
+	$(CC) $(CFLAGS) /c /Fo:sign_masked.obj sign_masked.c
+
 TESTOBJ = test_fndsa.obj
 SPEEDOBJ = speed_fndsa.obj
 

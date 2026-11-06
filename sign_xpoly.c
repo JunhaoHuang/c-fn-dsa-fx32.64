@@ -2030,7 +2030,7 @@ xpoly_FFT_int32_selfadj(unsigned logn, rx *d, const int32_t *a)
 			}
 		}
 		for (size_t j = 0; j < k; j ++) {
-			aa[j + k] <<= 1;
+			aa[j + k] = (int32_t)((uint32_t)aa[j + k] << 1);
 		}
 	}
 
@@ -2166,7 +2166,7 @@ xpoly_FFT_int32(unsigned logn, rx *d, const int32_t *a)
 	/* First, we compute and convert a. aa[] does not overlap
 	   with cc[]. */
 	int32_t *aa = (int32_t *)(void *)(d + hn) - hn;
-	aa[0] = cc[0] << 1;
+	aa[0] = (int32_t)((uint32_t)cc[0] << 1);
 	if (logn >= 4) {
 		aa[1] = cc[1] - cc[n - 1];
 		aa[2] = cc[2] - cc[n - 2];
@@ -2187,7 +2187,7 @@ xpoly_FFT_int32(unsigned logn, rx *d, const int32_t *a)
 	/* We now convert b. We alias bb[] on the second half of cc[],
 	   so that the computation of bb[] works fine. */
 	int32_t *bb = cc + hn;
-	bb[0] <<= 1;
+	bb[0] = (int32_t)((uint32_t)bb[0] << 1);
 	if (logn >= 4) {
 		bb[1] += cc[hn - 1];
 		bb[2] += cc[hn - 2];
@@ -2236,7 +2236,7 @@ xpoly_FFT_int32(unsigned logn, rx *d, const int32_t *a)
 	/* First, we compute and convert a. aa[] does not overlap
 	   with cc[]. */
 	int32_t *aa = (int32_t *)(void *)(d + hn) - hn;
-	aa[0] = cc[0] << 1;
+	aa[0] = (int32_t)((uint32_t)cc[0] << 1);
 	if (logn >= 4) {
 		aa[1] = cc[1] - cc[n - 1];
 		aa[2] = cc[2] - cc[n - 2];
@@ -2258,7 +2258,7 @@ xpoly_FFT_int32(unsigned logn, rx *d, const int32_t *a)
 	/* We now convert b. We alias bb[] on the second half of cc[],
 	   so that the computation of bb[] works fine. */
 	int32_t *bb = cc + hn;
-	bb[0] <<= 1;
+	bb[0] = (int32_t)((uint32_t)bb[0] << 1);
 	if (logn >= 4) {
 		bb[1] += cc[hn - 1];
 		bb[2] += cc[hn - 2];
@@ -2308,7 +2308,7 @@ xpoly_FFT_int32(unsigned logn, rx *d, const int32_t *a)
 	/* First, we compute and convert a. aa[] does not overlap
 	   with cc[]. */
 	int32_t *aa = (int32_t *)(void *)(d + hn) - hn;
-	aa[0] = cc[0] << 1;
+	aa[0] = (int32_t)((uint32_t)cc[0] << 1);
 	for (size_t j = 1; j < hn; j ++) {
 		aa[j] = cc[j] - cc[n - j];
 	}
@@ -2317,7 +2317,7 @@ xpoly_FFT_int32(unsigned logn, rx *d, const int32_t *a)
 	/* We now convert b. We alias bb[] on the second half of cc[],
 	   so that the computation of bb[] works fine. */
 	int32_t *bb = cc + hn;
-	bb[0] <<= 1;
+	bb[0] = (int32_t)((uint32_t)bb[0] << 1);
 	for (size_t j = 1; j < hn; j ++) {
 		bb[j] += cc[hn - j];
 	}

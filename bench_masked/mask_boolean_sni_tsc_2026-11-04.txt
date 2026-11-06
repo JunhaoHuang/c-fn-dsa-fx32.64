@@ -1,0 +1,148 @@
+Script started on 2026-11-04 14:31:36+08:00 [COMMAND="taskset -c 2 ./speed_masked -tsc" <not executed on terminal>]
+Experimental masking gadget benchmark -- DEMO ONLY
+Counter unit: TSC/reference ticks
+
+Mask RNG
+mask RNG init                                   7.80 TSC-ticks/op
+mask RNG next_u64                               4.92 TSC-ticks/op
+mask RNG next_u32                               4.87 TSC-ticks/op
+mask RNG next_bit                               5.29 TSC-ticks/op
+mask RNG mod 12289                              8.86 TSC-ticks/op
+mask RNG mod 18433                             10.28 TSC-ticks/op
+mask RNG mod 226523137                         12.04 TSC-ticks/op
+
+160-bit arithmetic and conversion gadgets
+mrx160_share_rx                                23.86 TSC-ticks/op
+mrx160_open_rx                                  4.88 TSC-ticks/op
+mrx160_copy                                     3.89 TSC-ticks/op
+mrx160_add                                      7.83 TSC-ticks/op
+mrx160_sub                                      8.77 TSC-ticks/op
+mrx160_neg                                     10.69 TSC-ticks/op
+mrx160_refresh                                 26.02 TSC-ticks/op
+mrx160_a2b                                   1388.04 TSC-ticks/op
+mrx160_b2a                                    170.50 TSC-ticks/op
+mrx160_mul fast                              1961.66 TSC-ticks/op
+mrx160_sqr                                   2055.83 TSC-ticks/op
+mrx160_mul_wide                              5567.07 TSC-ticks/op
+mrx160_floor                                 1468.88 TSC-ticks/op
+mrx160_inv_spec                             43352.60 TSC-ticks/op
+mrx160_div_spec                             29085.20 TSC-ticks/op
+mrx160_sqrt_spec                            56287.00 TSC-ticks/op
+mrx160_mul_u64_hi                            1428.46 TSC-ticks/op
+mrx160_expm_p63                             20820.60 TSC-ticks/op
+mrx160_BerExp accept path                   32078.00 TSC-ticks/op
+mrx160_BerExp reject path                   31734.00 TSC-ticks/op
+mrx160_SamplerZ logn=9                      44720.00 TSC-ticks/op
+mrx160_SamplerZ logn=10                     44634.00 TSC-ticks/op
+
+Modulo 12289 gadgets
+mmod32_share mod 12289                         14.58 TSC-ticks/op
+mmod32_open mod 12289                           4.34 TSC-ticks/op
+mmod32_add mod 12289                            3.12 TSC-ticks/op
+mmod32_sub mod 12289                            3.89 TSC-ticks/op
+mmod32_mul mod 12289                           34.14 TSC-ticks/op
+mmod32_refresh mod 12289                       10.84 TSC-ticks/op
+
+Modulo 18433 gadgets
+mmod32_share mod 18433                         14.88 TSC-ticks/op
+mmod32_open mod 18433                           5.44 TSC-ticks/op
+mmod32_add mod 18433                            3.12 TSC-ticks/op
+mmod32_sub mod 18433                            3.89 TSC-ticks/op
+mmod32_mul mod 18433                           34.66 TSC-ticks/op
+mmod32_refresh mod 18433                       11.74 TSC-ticks/op
+
+Modulo 226523137 gadgets
+mmod32_share mod 226523137                     16.68 TSC-ticks/op
+mmod32_open mod 226523137                       5.70 TSC-ticks/op
+mmod32_add mod 226523137                        3.14 TSC-ticks/op
+mmod32_sub mod 226523137                        3.91 TSC-ticks/op
+mmod32_mul mod 226523137                       37.24 TSC-ticks/op
+mmod32_refresh mod 226523137                   13.54 TSC-ticks/op
+
+Masked dynamic backend (FN-DSA-512)
+masked FFT logn=9                        10264573.00 TSC-ticks/op
+masked LDL logn=9                         9828682.00 TSC-ticks/op
+masked ffSampling left logn=9           147643467.00 TSC-ticks/op
+masked ffSampling right logn=9          156175355.00 TSC-ticks/op
+
+Masked dynamic backend (FN-DSA-1024)
+masked FFT logn=10                       23027704.00 TSC-ticks/op
+masked LDL logn=10                       19786837.00 TSC-ticks/op
+masked ffSampling left logn=10          319140625.00 TSC-ticks/op
+masked ffSampling right logn=10         335803942.00 TSC-ticks/op
+
+Masked modular polynomial backend (FN-DSA-512)
+Unmasked Falcon baseline on the same host
+plain NTT q logn=9                           2494.00 TSC-ticks/op
+plain iNTT q logn=9                          2623.00 TSC-ticks/op
+plain NTT q-prime logn=9                     2494.00 TSC-ticks/op
+plain iNTT q-prime logn=9                    2623.00 TSC-ticks/op
+plain pointwise q logn=9                      387.00 TSC-ticks/op
+plain pointwise q-prime logn=9                387.00 TSC-ticks/op
+plain Gram q logn=9                           473.00 TSC-ticks/op
+plain Gram q-prime logn=9                     473.00 TSC-ticks/op
+plain CRT logn=9                              602.00 TSC-ticks/op
+Masked Raccoon-style sharewise backend
+masked NTT q logn=9                         23263.00 TSC-ticks/op
+masked iNTT q logn=9                        28552.00 TSC-ticks/op
+masked NTT q-prime logn=9                   23779.00 TSC-ticks/op
+masked iNTT q-prime logn=9                  28638.00 TSC-ticks/op
+masked pointwise q logn=9                   17845.00 TSC-ticks/op
+masked pointwise q-prime logn=9             18103.00 TSC-ticks/op
+masked Gram q logn=9                        40377.00 TSC-ticks/op
+masked Gram q-prime logn=9                  40850.00 TSC-ticks/op
+masked CRT+center logn=9                   549497.00 TSC-ticks/op
+masked center one coefficient                1053.50 TSC-ticks/op
+
+Masked modular polynomial backend (FN-DSA-1024)
+Unmasked Falcon baseline on the same host
+plain NTT q logn=10                          5246.00 TSC-ticks/op
+plain iNTT q logn=10                         5590.00 TSC-ticks/op
+plain NTT q-prime logn=10                    5289.00 TSC-ticks/op
+plain iNTT q-prime logn=10                   5590.00 TSC-ticks/op
+plain pointwise q logn=10                     688.00 TSC-ticks/op
+plain pointwise q-prime logn=10               731.00 TSC-ticks/op
+plain Gram q logn=10                          903.00 TSC-ticks/op
+plain Gram q-prime logn=10                    903.00 TSC-ticks/op
+plain CRT logn=10                            1161.00 TSC-ticks/op
+Masked Raccoon-style sharewise backend
+masked NTT q logn=10                        50138.00 TSC-ticks/op
+masked iNTT q logn=10                       61447.00 TSC-ticks/op
+masked NTT q-prime logn=10                  51256.00 TSC-ticks/op
+masked iNTT q-prime logn=10                 62006.00 TSC-ticks/op
+masked pointwise q logn=10                  35819.00 TSC-ticks/op
+masked pointwise q-prime logn=10            36335.00 TSC-ticks/op
+masked Gram q logn=10                       81270.00 TSC-ticks/op
+masked Gram q-prime logn=10                 82044.00 TSC-ticks/op
+masked CRT+center logn=10                 1110389.00 TSC-ticks/op
+masked center one coefficient                1055.65 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-512)
+fndsa_masked_key_size logn=9                    3.12 TSC-ticks/op
+fndsa_masked_tmp_size logn=9                    5.22 TSC-ticks/op
+masked key import logn=9                   169377.00 TSC-ticks/op
+masked basis expand logn=9                 194102.00 TSC-ticks/op
+masked final vectors logn=9               2297060.00 TSC-ticks/op
+masked aggregate accept logn=9            6663796.00 TSC-ticks/op
+masked key validate logn=9                    473.00 TSC-ticks/op
+plain seeded sign logn=9                  1154851.00 TSC-ticks/op
+masked seeded sign logn=9               365916240.00 TSC-ticks/op
+masked random sign logn=9               365877196.00 TSC-ticks/op
+masked key clear logn=9                      3655.00 TSC-ticks/op
+
+Masked-key and signing API (FN-DSA-1024)
+fndsa_masked_key_size logn=10                   3.12 TSC-ticks/op
+fndsa_masked_tmp_size logn=10                   5.20 TSC-ticks/op
+masked key import logn=10                  328133.00 TSC-ticks/op
+masked basis expand logn=10                386097.00 TSC-ticks/op
+masked final vectors logn=10              4609471.00 TSC-ticks/op
+masked aggregate accept logn=10          13308930.00 TSC-ticks/op
+masked key validate logn=10                   903.00 TSC-ticks/op
+plain seeded sign logn=10                 2442314.00 TSC-ticks/op
+masked seeded sign logn=10              789379681.00 TSC-ticks/op
+masked random sign logn=10              781645658.00 TSC-ticks/op
+masked key clear logn=10                     7224.00 TSC-ticks/op
+
+benchmark sink: 2312001029833316463
+
+Script done on 2026-11-04 14:32:13+08:00 [COMMAND_EXIT_CODE="0"]
